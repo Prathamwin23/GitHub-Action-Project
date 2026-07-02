@@ -27,6 +27,10 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn compile
+
+    - name: Download dependencies
+      run: mvn dependency:resolve
+
   security-check:
 
     runs-on: ubuntu-latest
