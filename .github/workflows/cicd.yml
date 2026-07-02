@@ -1,43 +1,35 @@
 name: CICD Pipeline
-
 on:
   push:
     branches:
       - master
-
 jobs:
   compile:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Source
         uses: actions/checkout@v4
-
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
-
       - name: Build with Maven
         run: mvn compile
 
   security-check:
     needs: compile
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Source
         uses: actions/checkout@v4
-
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
-
       - name: Resolve Maven Dependencies
         run: mvn dependency:resolve
 
@@ -51,12 +43,13 @@ jobs:
           sudo apt-get install -y trivy
 
       - name: Trivy File System Scan
-        run: trivy fs --format table -o fs-report.json .
+        run: trivy fs --format table -o fs-report.txt .
 
       - name: Install Gitleaks
         run: |
-          wget https://github.com/gitleaks/gitleaks/releases/latest/download/gitleaks_linux_x64.tar.gz
-          tar -xzf gitleaks_linux_x64.tar.gz
+          GITLEAKS_VERSION=$(curl -s "https://api.github.com/repos/gitleaks/gitleaks/releases/latest" | grep '"tag_name"' | sed -E 's/.*"v([^"]+)".*/\1/')
+          wget "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          tar -xzf "gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
           sudo mv gitleaks /usr/local/bin/
 
       - name: Gitleaks Code Scan
