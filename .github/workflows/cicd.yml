@@ -12,7 +12,7 @@ env:
 
 jobs:
   compile:
-    runs-on: Self-Hosted
+    runs-on: self-hosted
     steps:
       - name: Checkout Source
         uses: actions/checkout@v4
@@ -29,7 +29,7 @@ jobs:
 
   security-check:
     needs: compile
-    runs-on: Self-Hosted
+    runs-on: self-hosted
     steps:
       - name: Checkout Source
         uses: actions/checkout@v4
@@ -67,7 +67,7 @@ jobs:
         run: gitleaks detect --source . --report-format json --report-path gitleaks-report.json
 
   test:
-    runs-on: Self-Hosted
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
 
@@ -82,7 +82,7 @@ jobs:
         run: mvn test
 
   Build_Project_and_Sonar_Scan:
-    runs-on: Self-Hosted
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
 
